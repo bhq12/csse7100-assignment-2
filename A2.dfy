@@ -18,7 +18,7 @@ method swap(a: array<int>, index_1: int, index_2: int) returns (b: array<int>)
         decreases a.Length - i
     {
         b[i] := a[i];
-        i:= i+1;
+        i:= i + 1;
     }
     //Swap the two positiions in the new array
     var temp_1 := a[index_1];
@@ -26,6 +26,7 @@ method swap(a: array<int>, index_1: int, index_2: int) returns (b: array<int>)
     b[index_1] := temp_2;
     b[index_2] := temp_1;
 }
+
 
 
 //Q1
@@ -36,13 +37,26 @@ method swap(a: array<int>, index_1: int, index_2: int) returns (b: array<int>)
 // Thought: What happens if there are duplicates?
 method Rearrange(a: array<int>)
 requires true
-ensures true
+//ensures forall i :: 0 <= i < a.Length ==> i < 0 || i > a.Length || a[i] == i 
+//Either the element at a[i] is not a valid index OR the element at a[i] is at the position i?
+//Confused: what do we do about duplicates?
+//in: [1,0,1]
+//out: [0,1,1]
+//a[0] == 0
+//a[1] == 1
+//a[2] == 1 ???
+ensures forall i :: 0 <= i < a.Length ==> a[i] < 0 || a[i] >= a.Length || a[i] == i
+
 {
     var n: nat;
     n := 0;
 
-    while (n < a.Length) {
-
+    while (n < a.Length)
+        invariant 0 <= n <= a.Length
+        decreases a.Length - n
+    {
+        while 
+        n := n + 1;
     }
 
 
