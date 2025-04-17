@@ -27,6 +27,20 @@ method swap(a: array<int>, index_1: int, index_2: int) returns (b: array<int>)
     b[index_2] := temp_1;
 }
 
+method recursiveSwap(a: array<int>, index_1: int, index_2: int, call_count: int)
+    requires call_count <= a.Length
+    requires 0 <= index_1 < a.Length
+    requires 0 <= index_2 < a.Length
+    decreases a.Length - call_count
+{
+    if (call_count < a.Length && index_1 != a[index_2]) {
+            //TODO: Call the swap function?
+            // How do we do the requires when we are mutating the array?
+            recursiveSwap(a,index_2, a[index_2],call_count+1);
+            
+    }
+}
+
 
 
 //Q1
@@ -37,6 +51,7 @@ method swap(a: array<int>, index_1: int, index_2: int) returns (b: array<int>)
 // Thought: What happens if there are duplicates?
 method Rearrange(a: array<int>)
 requires true
+ensures true
 //ensures forall i :: 0 <= i < a.Length ==> i < 0 || i > a.Length || a[i] == i 
 //Either the element at a[i] is not a valid index OR the element at a[i] is at the position i?
 //Confused: what do we do about duplicates?
@@ -45,7 +60,7 @@ requires true
 //a[0] == 0
 //a[1] == 1
 //a[2] == 1 ???
-ensures forall i :: 0 <= i < a.Length ==> a[i] < 0 || a[i] >= a.Length || a[i] == i
+//ensures forall i :: 0 <= i < a.Length ==> a[i] < 0 || a[i] >= a.Length || a[i] == i
 
 {
     var n: nat;
@@ -55,7 +70,9 @@ ensures forall i :: 0 <= i < a.Length ==> a[i] < 0 || a[i] >= a.Length || a[i] =
         invariant 0 <= n <= a.Length
         decreases a.Length - n
     {
-        while 
+        if (a[n] < a.Length) {
+            a := recursiveSwap(a, n, a[n], 1);
+        }
         n := n + 1;
     }
 
