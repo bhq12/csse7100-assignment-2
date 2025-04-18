@@ -1,30 +1,19 @@
 // Helper method to swap two index positions
-method swap(a: array<int>, index_1: int, index_2: int) returns (b: array<int>)
+method swap(a: array<int>, index_1: int, index_2: int)
     //Requires two valid indexes
     requires index_1 >= 0 && index_2 >= 0
-    && index_1 < a.Length && index_2 < a.Length
+    requires index_1 < a.Length && index_2 < a.Length
+    modifies a
     // Ensures index_1 + index_2 are swapped AND all other indexes are identical
-    ensures a.Length == b.Length
-    && a[index_1] == b[index_2]
-    && a[index_2] == b[index_1]
-    && forall i :: 0 <= i < a.Length ==> i == index_1 || i == index_2 || a[i] == b[i]
+    ensures a[index_1] == old(a[index_2])
+    ensures a[index_2] == old(a[index_1])
+    ensures forall i :: 0 <= i < a.Length ==> i == index_1 || i == index_2 || a[i] == old(a[i])
 {
-    //Create a copy of the array
-    b := new int[a.Length];
-    var i := 0;
-    while (i < a.Length)
-        invariant i <= a.Length
-        invariant forall j :: 0 <= j < i ==> a[j] == b[j]
-        decreases a.Length - i
-    {
-        b[i] := a[i];
-        i:= i + 1;
-    }
     //Swap the two positiions in the new array
     var temp_1 := a[index_1];
     var temp_2 := a[index_2];
-    b[index_1] := temp_2;
-    b[index_2] := temp_1;
+    a[index_1] := temp_2;
+    a[index_2] := temp_1;
 }
 
 method recursiveSwap(a: array<int>, index_1: int, index_2: int, call_count: int)
