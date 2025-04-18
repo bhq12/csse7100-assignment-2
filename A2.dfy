@@ -20,11 +20,13 @@ method recursiveSwap(a: array<int>, index_1: int, index_2: int, call_count: int)
     requires call_count <= a.Length
     requires 0 <= index_1 < a.Length
     requires 0 <= index_2 < a.Length
+    modifies a
     decreases a.Length - call_count
 {
     if (call_count < a.Length && index_1 != a[index_2]) {
             //TODO: Call the swap function?
             // How do we do the requires when we are mutating the array?
+            swap(a, index_1, index_2);
             recursiveSwap(a,index_2, a[index_2],call_count+1);
             
     }
@@ -40,6 +42,7 @@ method recursiveSwap(a: array<int>, index_1: int, index_2: int, call_count: int)
 // Thought: What happens if there are duplicates?
 method Rearrange(a: array<int>)
 requires true
+modifies a
 ensures true
 //ensures forall i :: 0 <= i < a.Length ==> i < 0 || i > a.Length || a[i] == i 
 //Either the element at a[i] is not a valid index OR the element at a[i] is at the position i?
@@ -59,8 +62,13 @@ ensures true
         invariant 0 <= n <= a.Length
         decreases a.Length - n
     {
-        if (a[n] < a.Length) {
-            a := recursiveSwap(a, n, a[n], 1);
+        if (
+            a[n] < a.Length
+            && a.Length >= 1
+            && 0 <= n < a.Length
+            && 0 <= a[n] < a.Length
+            ) {
+            recursiveSwap(a, n, a[n], 1);
         }
         n := n + 1;
     }
