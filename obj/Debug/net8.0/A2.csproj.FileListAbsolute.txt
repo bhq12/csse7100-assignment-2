@@ -1,0 +1,15 @@
+/home/bq/Documents/repos/csse7100-assignment-2/obj/Debug/net8.0/A2.GeneratedMSBuildEditorConfig.editorconfig
+/home/bq/Documents/repos/csse7100-assignment-2/obj/Debug/net8.0/A2.AssemblyInfoInputs.cache
+/home/bq/Documents/repos/csse7100-assignment-2/obj/Debug/net8.0/A2.AssemblyInfo.cs
+/home/bq/Documents/repos/csse7100-assignment-2/obj/Debug/net8.0/A2.csproj.CoreCompileInputs.cache
+/home/bq/Documents/repos/csse7100-assignment-2/obj/Debug/net8.0/A2.sourcelink.json
+/home/bq/Documents/repos/csse7100-assignment-2/obj/Debug/net8.0/A2.dll
+/home/bq/Documents/repos/csse7100-assignment-2/obj/Debug/net8.0/refint/A2.dll
+/home/bq/Documents/repos/csse7100-assignment-2/obj/Debug/net8.0/A2.pdb
+/home/bq/Documents/repos/csse7100-assignment-2/A2.deps.json
+/home/bq/Documents/repos/csse7100-assignment-2/A2.dll
+/home/bq/Documents/repos/csse7100-assignment-2/obj/Debug/net8.0/ref/A2.dll
+/home/bq/Documents/repos/csse7100-assignment-2/A2.pdb
+/home/bq/Documents/repos/csse7100-assignment-2/A2
+/home/bq/Documents/repos/csse7100-assignment-2/obj/Debug/net8.0/A2.genruntimeconfig.cache
+/home/bq/Documents/repos/csse7100-assignment-2/A2.runtimeconfig.json
