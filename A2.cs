@@ -32,14 +32,15 @@ method swap(a: array<int>, index_1: int, index_2: int)
 method recursiveSwap(a: array<int>, index_1: int, index_2: int, call_count: int)
   requires call_count <= a.Length
   requires 0 <= index_1 < a.Length
-  requires a.Length >= 6
   requires 0 <= index_2 < a.Length
   modifies a
   decreases a.Length - call_count
 {
   print ""\nindex_1: "", index_1, "", index_2: "", index_2, ""\n"";
   if call_count < a.Length && index_1 != a[index_2] {
-    print ""\n["", a[0], "","", a[1], "","", a[2], "","", a[3], "","", a[4], "","", a[5], ""]\n"";
+    if a.Length >= 6 {
+      print ""\n["", a[0], "","", a[1], "","", a[2], "","", a[3], "","", a[4], "","", a[5], ""]\n"";
+    }
     swap(a, index_1, index_2);
     if 0 <= a[index_1] < a.Length {
       print ""RECURSE\n"";
@@ -49,7 +50,6 @@ method recursiveSwap(a: array<int>, index_1: int, index_2: int, call_count: int)
 }
 
 method Rearrange(a: array<int>)
-  requires a.Length >= 6
   modifies a
   ensures true
   decreases a
@@ -61,15 +61,23 @@ method Rearrange(a: array<int>)
     decreases a.Length - n
   {
     if a[n] < a.Length && a.Length >= 1 && 0 <= n < a.Length && 0 <= a[n] < a.Length {
+      var index_1 := n;
+      var index_2 := a[n];
+      var swap_count := 0;
+      while 0 <= index_1 < a.Length && 0 <= index_2 < a.Length && swap_count < a.Length
+        decreases a.Length - swap_count
+      {
+        swap(a, index_1, index_2);
+        index_2 := a[index_1];
+        swap_count := swap_count + 1;
+      }
       print ""INCREMENT\n"";
-      recursiveSwap(a, n, a[n], 1);
     }
     n := n + 1;
   }
 }
 
 method Find(a: array<int>) returns (r: int)
-  requires a.Length >= 6
   modifies a
   ensures true
   decreases a
@@ -86,6 +94,26 @@ method Find(a: array<int>) returns (r: int)
     i := i + 1;
   }
   return i;
+}
+
+method FindAll(a: array<int>) returns (b: array<bool>)
+  modifies a
+  decreases a
+{
+  b := new bool[a.Length];
+  var i := 0;
+  Rearrange(a);
+  while i < a.Length
+    invariant 0 <= i <= a.Length
+    decreases a.Length - i
+  {
+    if a[i] == i {
+      b[i] := true;
+    } else {
+      b[i] := false;
+    }
+    i := i + 1;
+  }
 }
 
 method Main(_noArgsParameter: seq<seq<char>>)
@@ -110,6 +138,17 @@ method Main(_noArgsParameter: seq<seq<char>>)
   a[5] := 7;
   var result := Find(a);
   print ""\nFind(a): "", result;
+  print ""FINDALL"";
+  a[0] := 2;
+  a[1] := -3;
+  a[2] := 4;
+  a[3] := 1;
+  a[4] := 1;
+  a[5] := 7;
+  var b := FindAll(a);
+  if b.Length > 5 {
+    print ""\n["", b[0], "","", b[1], "","", b[2], "","", b[3], "","", b[4], "","", b[5], ""]\n"";
+  }
   print ""\n"";
 }
 ")]
@@ -5817,19 +5856,21 @@ namespace _module {
       Dafny.Helpers.Print((index__2));
       Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString("\n")).ToVerbatimString(false));
       if (((call__count) < (new BigInteger((a).Length))) && ((index__1) != ((a)[(int)(index__2)]))) {
-        Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString("\n[")).ToVerbatimString(false));
-        Dafny.Helpers.Print(((a)[(int)(BigInteger.Zero)]));
-        Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString(",")).ToVerbatimString(false));
-        Dafny.Helpers.Print(((a)[(int)(BigInteger.One)]));
-        Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString(",")).ToVerbatimString(false));
-        Dafny.Helpers.Print(((a)[(int)(new BigInteger(2))]));
-        Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString(",")).ToVerbatimString(false));
-        Dafny.Helpers.Print(((a)[(int)(new BigInteger(3))]));
-        Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString(",")).ToVerbatimString(false));
-        Dafny.Helpers.Print(((a)[(int)(new BigInteger(4))]));
-        Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString(",")).ToVerbatimString(false));
-        Dafny.Helpers.Print(((a)[(int)(new BigInteger(5))]));
-        Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString("]\n")).ToVerbatimString(false));
+        if ((new BigInteger((a).Length)) >= (new BigInteger(6))) {
+          Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString("\n[")).ToVerbatimString(false));
+          Dafny.Helpers.Print(((a)[(int)(BigInteger.Zero)]));
+          Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString(",")).ToVerbatimString(false));
+          Dafny.Helpers.Print(((a)[(int)(BigInteger.One)]));
+          Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString(",")).ToVerbatimString(false));
+          Dafny.Helpers.Print(((a)[(int)(new BigInteger(2))]));
+          Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString(",")).ToVerbatimString(false));
+          Dafny.Helpers.Print(((a)[(int)(new BigInteger(3))]));
+          Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString(",")).ToVerbatimString(false));
+          Dafny.Helpers.Print(((a)[(int)(new BigInteger(4))]));
+          Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString(",")).ToVerbatimString(false));
+          Dafny.Helpers.Print(((a)[(int)(new BigInteger(5))]));
+          Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString("]\n")).ToVerbatimString(false));
+        }
         __default.swap(a, index__1, index__2);
         if ((((a)[(int)(index__1)]).Sign != -1) && (((a)[(int)(index__1)]) < (new BigInteger((a).Length)))) {
           Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString("RECURSE\n")).ToVerbatimString(false));
@@ -5851,8 +5892,18 @@ namespace _module {
       _0_n = BigInteger.Zero;
       while ((_0_n) < (new BigInteger((a).Length))) {
         if ((((((a)[(int)(_0_n)]) < (new BigInteger((a).Length))) && ((new BigInteger((a).Length)) >= (BigInteger.One))) && (((_0_n).Sign != -1) && ((_0_n) < (new BigInteger((a).Length))))) && ((((a)[(int)(_0_n)]).Sign != -1) && (((a)[(int)(_0_n)]) < (new BigInteger((a).Length))))) {
+          BigInteger _1_index__1;
+          _1_index__1 = _0_n;
+          BigInteger _2_index__2;
+          _2_index__2 = (a)[(int)(_0_n)];
+          BigInteger _3_swap__count;
+          _3_swap__count = BigInteger.Zero;
+          while (((((_1_index__1).Sign != -1) && ((_1_index__1) < (new BigInteger((a).Length)))) && (((_2_index__2).Sign != -1) && ((_2_index__2) < (new BigInteger((a).Length))))) && ((_3_swap__count) < (new BigInteger((a).Length)))) {
+            __default.swap(a, _1_index__1, _2_index__2);
+            _2_index__2 = (a)[(int)(_1_index__1)];
+            _3_swap__count = (_3_swap__count) + (BigInteger.One);
+          }
           Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString("INCREMENT\n")).ToVerbatimString(false));
-          __default.recursiveSwap(a, _0_n, (a)[(int)(_0_n)], BigInteger.One);
         }
         _0_n = (_0_n) + (BigInteger.One);
       }
@@ -5873,6 +5924,24 @@ namespace _module {
       r = _0_i;
       return r;
       return r;
+    }
+    public static bool[] FindAll(BigInteger[] a)
+    {
+      bool[] b = new bool[0];
+      bool[] _nw0 = new bool[Dafny.Helpers.ToIntChecked(new BigInteger((a).Length), "array size exceeds memory limit")];
+      b = _nw0;
+      BigInteger _0_i;
+      _0_i = BigInteger.Zero;
+      __default.Rearrange(a);
+      while ((_0_i) < (new BigInteger((a).Length))) {
+        if (((a)[(int)(_0_i)]) == (_0_i)) {
+          (b)[(int)((_0_i))] = true;
+        } else {
+          (b)[(int)((_0_i))] = false;
+        }
+        _0_i = (_0_i) + (BigInteger.One);
+      }
+      return b;
     }
     public static void _Main(Dafny.ISequence<Dafny.ISequence<Dafny.Rune>> __noArgsParameter)
     {
@@ -5926,6 +5995,32 @@ namespace _module {
       _1_result = _out0;
       Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString("\nFind(a): ")).ToVerbatimString(false));
       Dafny.Helpers.Print((_1_result));
+      Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString("FINDALL")).ToVerbatimString(false));
+      (_0_a)[(int)((BigInteger.Zero))] = new BigInteger(2);
+      (_0_a)[(int)((BigInteger.One))] = new BigInteger(-3);
+      (_0_a)[(int)((new BigInteger(2)))] = new BigInteger(4);
+      (_0_a)[(int)((new BigInteger(3)))] = BigInteger.One;
+      (_0_a)[(int)((new BigInteger(4)))] = BigInteger.One;
+      (_0_a)[(int)((new BigInteger(5)))] = new BigInteger(7);
+      bool[] _2_b;
+      bool[] _out1;
+      _out1 = __default.FindAll(_0_a);
+      _2_b = _out1;
+      if ((new BigInteger((_2_b).Length)) > (new BigInteger(5))) {
+        Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString("\n[")).ToVerbatimString(false));
+        Dafny.Helpers.Print(((_2_b)[(int)(BigInteger.Zero)]));
+        Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString(",")).ToVerbatimString(false));
+        Dafny.Helpers.Print(((_2_b)[(int)(BigInteger.One)]));
+        Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString(",")).ToVerbatimString(false));
+        Dafny.Helpers.Print(((_2_b)[(int)(new BigInteger(2))]));
+        Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString(",")).ToVerbatimString(false));
+        Dafny.Helpers.Print(((_2_b)[(int)(new BigInteger(3))]));
+        Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString(",")).ToVerbatimString(false));
+        Dafny.Helpers.Print(((_2_b)[(int)(new BigInteger(4))]));
+        Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString(",")).ToVerbatimString(false));
+        Dafny.Helpers.Print(((_2_b)[(int)(new BigInteger(5))]));
+        Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString("]\n")).ToVerbatimString(false));
+      }
       Dafny.Helpers.Print((Dafny.Sequence<Dafny.Rune>.UnicodeFromString("\n")).ToVerbatimString(false));
     }
   }

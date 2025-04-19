@@ -18,30 +18,6 @@ method swap(a: array<int>, index_1: int, index_2: int)
     a[index_2] := temp_1;
 }
 
-method recursiveSwap(a: array<int>, index_1: int, index_2: int, call_count: int)
-    requires call_count <= a.Length
-    requires 0 <= index_1 < a.Length
-    requires a.Length >= 6
-    requires 0 <= index_2 < a.Length
-    modifies a
-    decreases a.Length - call_count
-{
-    print "\nindex_1: ", index_1, ", index_2: ", index_2, "\n";
-    if (call_count < a.Length && index_1 != a[index_2]) {
-            //TODO: Call the swap function?
-            // How do we do the requires when we are mutating the array?
-            print "\n[", a[0], ",", a[1], ",", a[2], ",", a[3], ",", a[4], ",", a[5], "]\n";
-            swap(a, index_1, index_2);
-            if (0 <= a[index_1] < a.Length) {
-                print "RECURSE\n";
-                recursiveSwap(a, index_1, a[index_1],call_count+1);
-            }
-            
-    }
-}
-
-
-
 //Q1
 // Ideas: 
 // For elements in a
@@ -49,7 +25,6 @@ method recursiveSwap(a: array<int>, index_1: int, index_2: int, call_count: int)
 // else: no guarantee
 // Thought: What happens if there are duplicates?
 method Rearrange(a: array<int>)
-requires a.Length >= 6
 modifies a
 ensures true
 //ensures forall i :: 0 <= i < a.Length ==> i < 0 || i > a.Length || a[i] == i 
@@ -76,8 +51,26 @@ ensures true
             && 0 <= n < a.Length
             && 0 <= a[n] < a.Length
             ) {
+                var index_1 := n;
+                var index_2 := a[n];
+                var swap_count := 0;
+
+                while (
+                    0 <= index_1 < a.Length
+                    && 0 <= index_2 < a.Length
+                    && swap_count < a.Length
+                )
+                    decreases a.Length - swap_count
+                {
+                    swap(a, index_1, index_2);
+                    index_2 := a[index_1];
+                    swap_count := swap_count + 1;
+                }
+
+
+
             print "INCREMENT\n";
-            recursiveSwap(a, n, a[n], 1);
+            //recursiveSwap(a, n, a[n], 1);
         }
         n := n + 1;
     }
@@ -89,7 +82,6 @@ ensures true
 //Q2
 method Find(a: array<int>) returns (r: int)
 modifies a
-requires a.Length >= 6
 ensures true
 {
     Rearrange(a);
@@ -107,7 +99,30 @@ ensures true
 }
 
 //Q4 - CSSE3100 students should delete this line and the following line
-//method FindAll(a: array<int>) returns (b: array<bool>) 
+method FindAll(a: array<int>) returns (b: array<bool>)
+    modifies a
+{
+    b := new bool[a.Length];
+
+    var i := 0;
+
+    Rearrange(a);
+
+    while (i < a.Length)
+        invariant 0 <= i <= a.Length
+        decreases a.Length - i
+        {
+            if (a[i] == i) {
+                b[i] := true;
+            } else {
+                b[i] := false;
+            }
+            
+            i := i + 1;
+        }
+
+
+}
 
 method Main()
 {
@@ -132,6 +147,18 @@ method Main()
     var result := Find(a);
     print "\nFind(a): ", result;
 
-
+    print "FINDALL";
+    a[0] := 2;
+    a[1] := -3;
+    a[2] := 4;
+    a[3] := 1;
+    a[4] := 1;
+    a[5] := 7;
+    var b := FindAll(a);
+    if (b.Length > 5){
+        print "\n[", b[0], ",", b[1], ",", b[2], ",", b[3], ",", b[4], ",", b[5], "]\n";
+    }
     print "\n";
+
+
 }
